@@ -1,0 +1,23 @@
+{
+  "name": "group_project_csv_report",
+  "version": "1.0.0",
+  "description": "",
+  "main": "report.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaacwilson1811/group_project_csv_report.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0"
+  },
+  "bugs": {
+    "url": "https://github.com/isaacwilson1811/group_project_csv_report/issues"
+  },
+  "homepage": "https://github.com/isaacwilson1811/group_project_csv_report#readme"
+}
