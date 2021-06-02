@@ -2,6 +2,19 @@ const csv = require('csv-parser')
 const fs = require('fs')
 const fileData = []
 
+// const processedData = []
+// const studentReportData = []
+// const schoolReportData = []
+
+class Student{
+  constructor(id,firstname,lastname){
+    this.id = id
+    this.firstname = firstname
+    this.lastname = lastname
+    this.totalCredits = 0
+  }
+}
+
 function loadFileIntoMemory(fileName){ 
   fs.createReadStream(fileName)
     .pipe(csv())
