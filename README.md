@@ -9,7 +9,7 @@
 
 `npm install`
 
-`node report`
+`node report sampleData`
 
 ### thank you
 
