@@ -1,3 +1,6 @@
-id,firstname,lastname,class,credit
+id,firstname,lastname,classname,credit
+12345,Lightning,McQueen,Auto 101: What are cars?,2
 12345,Lightning,McQueen,Auto 102: Charging System,5
+54321,Thunder,McKing,Web Programming 101: basic OS,1
 54321,Thunder,McKing,Web Programming 101: Node.js,500
+10101,Person,Human,How To Be A Person,1000000
