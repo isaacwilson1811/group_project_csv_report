@@ -2,16 +2,15 @@ const csv = require('csv-parser')
 const fs = require('fs')
 const fileData = []
 
-// const processedData = []
-// const studentReportData = []
-// const schoolReportData = []
-
 class Student{
-  constructor(id,firstname,lastname){
+  constructor(id, firstname, lastname){
     this.id = id
     this.firstname = firstname
     this.lastname = lastname
+    this.classes = []
     this.totalCredits = 0
+    this.status = '?'
+    this.tuition = 0
   }
 }
 
@@ -23,19 +22,26 @@ function loadFileIntoMemory(fileName){
 }
 
 function processData(){
-  console.log(fileData);
-  let exampleCounter = 0;
+
+  let studentIDs = [];
+  let students = [];
 
   fileData.forEach( row => {
-    exampleCounter ++
-    console.log('Row #' + exampleCounter + ' Processing...')
-    console.log('Student ID: ' + row.id)
-    console.log('Student Name: ' + row.firstname, row.lastname)
-    console.log('Name of Class: ' + row.class)
-    console.log('Credits: ' + row.credit)
-    console.log(' ')
+    let {id, firstname, lastname, classname, credit} = row;
+    if (!studentIDs.includes(id)){
+      studentIDs.push(id);
+      let student = new Student(id, firstname, lastname);
+      student.totalCredits += Number(credit);
+      student.classes.push(classname);
+      students.push(student);
+    }
+    else {
+      let index = students.findIndex ( student => student.id === id );
+      students[index].totalCredits += Number(credit);
+      students[index].classes.push(classname);
+    }
   })
-  console.log('Total Rows Processed: ' + exampleCounter)
+  console.log(students);
 }
 
 loadFileIntoMemory('./sampleData.csv')
