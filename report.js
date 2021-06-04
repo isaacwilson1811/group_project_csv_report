@@ -1,6 +1,8 @@
 const csv = require('csv-parser')
 const fs = require('fs')
+
 const fileData = []
+const students = []
 
 class Student{
   constructor(id, firstname, lastname){
@@ -24,7 +26,6 @@ function loadFileIntoMemory(fileName){
 function processData(){
 
   let studentIDs = [];
-  let students = [];
 
   fileData.forEach( row => {
     let {id, firstname, lastname, classname, credit} = row;
