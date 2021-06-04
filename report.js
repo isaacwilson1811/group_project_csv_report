@@ -10,9 +10,22 @@ class Student{
     this.firstname = firstname
     this.lastname = lastname
     this.classes = []
-    this.totalCredits = 0
+    this.totalCredits = null
     this.status = '?'
-    this.tuition = 0
+    this.tuition = null
+  }
+  // each student has their own method for calculating their own totals and status
+  calculate(){
+    // total the credit hours
+    let countCredit = 0;
+    this.classes.forEach((c)=>{
+      countCredit += c.credit;
+    });
+    this.totalCredits = countCredit;
+    // determine status
+    // I forgot the criteria, but this is where we'd do that logic
+    this.status = (this.totalCredits > 10) ? 'FT' : 'PT'
+    this.tuition = this.totalCredits
   }
 }
 
@@ -20,29 +33,33 @@ function loadFileIntoMemory(fileName){
   fs.createReadStream(fileName)
     .pipe(csv())
       .on('data', line => fileData.push(line))
-        .on('end', () => processData())
+        .on('end', () => compileData())
 }
 
-function processData(){
-
-  let studentIDs = [];
-
+// this function will compile and restructure the data so that there is only one object per student
+function compileData(){
+  let checkedIDs = [];
   fileData.forEach( row => {
     let {id, firstname, lastname, classname, credit} = row;
-    if (!studentIDs.includes(id)){
-      studentIDs.push(id);
+    if (!checkedIDs.includes(id)){
       let student = new Student(id, firstname, lastname);
-      student.totalCredits += Number(credit);
-      student.classes.push(classname);
+      student.classes.push({classname:classname,credit:Number(credit)});
       students.push(student);
+      checkedIDs.push(id);
     }
     else {
       let index = students.findIndex ( student => student.id === id );
-      students[index].totalCredits += Number(credit);
-      students[index].classes.push(classname);
+      students[index].classes.push({classname:classname,credit:Number(credit)});
     }
   })
-  console.log(students);
+  processData()
+}
+
+function processData(){
+  students.forEach((student)=>{
+    student.calculate()
+  })
+  console.log(students)
 }
 
 loadFileIntoMemory('./sampleData.csv')
