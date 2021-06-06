@@ -1,4 +1,5 @@
 const csv = require('csv-parser');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const fs = require('fs');
 const path = require('path');
 
@@ -9,12 +10,12 @@ readFile(studentRegistration);
 const students = [];
 /*
   each student object has their own method for calculating their own credit totals, status and tuition
-  28. first sum the total of each object.credit property in the classes array
-  31. next determine FT/PT status based on the total credits
-      now start to calculate the tuition based on both status and total credits
-  32. part time students just pay $250 per credit and can return from the function early
-  36. if more code runs you are a full time student and you must pay at least $3,000
-  37. but wait! if you are super duper full time get charged an extra $250 per credit over 18 credits
+  first sum the total of each object.credit property in the classes array
+  next determine FT/PT status based on the total credits
+  now start to calculate the tuition based on both status and total credits
+  part time students just pay $250 per credit and can return from the function early
+  if more code runs you are a full time student and you must pay at least $3,000
+  but wait! if you are super duper full time get charged an extra $250 per credit over 18 credits
 */
 // each student calculation results will be added to these values
 const schoolTotals = {
@@ -30,7 +31,8 @@ class Student{
     this.id = id
     this.firstname = firstname
     this.lastname = lastname
-    this.classes = [] // an array of objects with the props {classname, credit} 
+    this.classes = [] // an array of objects with the props {classname, credit}
+    this.classList = '' // added a string verion of the classes for the csv writer
     this.totalCredits = 0
     this.status = '?'
     this.tuition = 0
@@ -65,6 +67,10 @@ class Student{
         break;
     }
     schoolTotals.allStudents += 1;
+    // make a string version of list of classes for the csv writer
+    this.classes.forEach(subject => {
+      this.classList += `Subject: ${subject.classname} Credit Hours: ${subject.credit} | `;
+    });
   }
 }
 //------------------------------------FUNCTIONAS------------------------------------------------------
@@ -112,8 +118,45 @@ function calcData(){
 }
 
 function reportFinalData(){
-  // for now we can log everything
-  // this is where a csv writer function call would go
-  console.log(students);
-  console.log(schoolTotals);
+  // console.log(students);
+  // console.log(schoolTotals);
+  writeSchoolReport();
+  writeStudentReport();
+}
+
+function writeSchoolReport(){
+  let filePath = path.join(__dirname,'output','school_report.csv');
+  let csvWriter = createCsvWriter({  
+    path: filePath,
+    header: [
+      {id: 'ptStudents', title: 'Part Time Students'},
+      {id: 'ptStudents', title: 'Full Time Students'},
+      {id: 'allStudents', title: 'Total Students'},
+      {id: 'ptTuitTotal', title: 'Part Time Tuition'},
+      {id: 'ftTuitTotal', title: 'Full Time Tuition'},
+      {id: 'allTuitTotal', title: 'Total Tuition'}
+    ]
+  });
+  let records = [schoolTotals];
+  csvWriter.writeRecords(records)
+    .then( () => console.log(`School Records written to\n${filePath} Successfully!`));
+}
+
+function writeStudentReport(){
+  let filePath = path.join(__dirname,'output','students_report.csv');
+  let csvWriter = createCsvWriter({  
+    path: filePath,
+    header: [
+      {id: 'id', title: 'id'},
+      {id: 'firstname', title: 'First Name'},
+      {id: 'lastname', title: 'Last Name'},
+      {id: 'classList', title: 'Classes'},
+      {id: 'totalCredits', title: 'Total Credits'},
+      {id: 'status', title: 'Status'},
+      {id: 'tuition', title: 'Tuition'}
+    ]
+  });
+  const records = students;
+  csvWriter.writeRecords(records)
+    .then( () => console.log(`Student Records written to\n${filePath} Successfully!`));
 }
